@@ -13,9 +13,9 @@ async function getImagineApiKey() {
 }
 
 // Handler for GET requests to check image generation status
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: any) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const requestId = id;
     
     if (!requestId) {

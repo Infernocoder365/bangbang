@@ -13,9 +13,10 @@ async function getImagineApiKey() {
 }
 
 // Handler for GET requests to retrieve generated images
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: any) {
   try {
-    const { id } = await params;
+    // Remove the await and use params directly
+    const { id } = params;
     const requestId = id;
     
     if (!requestId) {
