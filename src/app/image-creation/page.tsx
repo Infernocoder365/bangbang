@@ -1,60 +1,99 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ColorPicker from '@/components/ColorPicker';
+import ImageSelector from '@/components/ImageSelector';
+import { generateImages, checkImageStatus, getImageResults } from '@/services/imageService';
 
 export default function ImageCreation() {
   const [prompt, setPrompt] = useState('');
+  const [styleOption, setStyleOption] = useState('');
+  const [patternOption, setPatternOption] = useState('');
+  const [colorOption, setColorOption] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [progressValue, setProgressValue] = useState(0);
   const [statusMessage, setStatusMessage] = useState('Enter a prompt to generate wallpaper designs');
+  const [requestId, setRequestId] = useState<string | null>(null);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
 
-  // Mock function to simulate image generation
-  const generateImages = async () => {
+  // Function to handle color selection from the ColorPicker component
+  const handleColorSelect = (color: string) => {
+    console.log('Selected color:', color);
+    // Add the color to the selected colors array if it's not already there
+    if (!selectedColors.includes(color)) {
+      setSelectedColors([...selectedColors, color]);
+    }
+  };
+
+  // Function to remove a color from the selected colors array
+  const removeColor = (colorToRemove: string) => {
+    setSelectedColors(selectedColors.filter(color => color !== colorToRemove));
+  };
+
+  // Function to start image generation process
+  const startImageGeneration = async () => {
     if (!prompt.trim()) {
       setStatusMessage('Please enter a prompt first');
       return;
     }
 
-    setIsGenerating(true);
-    setProgressValue(0);
-    setStatusMessage('Starting image generation...');
-    setGeneratedImages([]);
-    setSelectedImage(null);
+    try {
+      setIsGenerating(true);
+      setProgressValue(0);
+      setStatusMessage('Starting image generation...');
+      setGeneratedImages([]);
+      setSelectedImage(null);
 
-    // Simulate progress updates
-    const statusUpdates = [
-      'Sending request to server...',
-      'Request received...',
-      'Starting image generation model...',
-      'Generating image (1/4)',
-      'Generating image (2/4)',
-      'Generating image (3/4)',
-      'Generating image (4/4)',
-      'Image generation complete. Optimizing images...'
-    ];
-
-    // In a real implementation, this would be replaced with actual API calls
-    for (let i = 0; i < statusUpdates.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setStatusMessage(statusUpdates[i]);
-      setProgressValue((i + 1) * (100 / statusUpdates.length));
+      // Generate images using our service
+      const id = await generateImages(prompt, styleOption, selectedColors);
+      setRequestId(id);
+      
+      // Start polling for status updates
+      const statusInterval = setInterval(async () => {
+        try {
+          const statusData = await checkImageStatus(id);
+          
+          // Update progress based on status
+          if (statusData.status === 'pending') {
+            setStatusMessage(`Generating images... ${Math.round(statusData.progress * 100)}%`);
+            setProgressValue(statusData.progress * 100);
+          } else if (statusData.status === 'completed') {
+            clearInterval(statusInterval);
+            setStatusMessage('Images generated! Fetching results...');
+            setProgressValue(100);
+            
+            // Get the generated images
+            const results = await getImageResults(id);
+            
+            if (results.upscaled_urls && results.upscaled_urls.length > 0) {
+              setGeneratedImages(results.upscaled_urls);
+              setStatusMessage('Image generation complete! Select an image to customize.');
+            } else {
+              setStatusMessage('No images were generated. Please try again with a different prompt.');
+            }
+            
+            setIsGenerating(false);
+          } else if (statusData.status === 'failed') {
+            clearInterval(statusInterval);
+            setStatusMessage('Image generation failed. Please try again.');
+            setIsGenerating(false);
+          }
+        } catch (error) {
+          console.error('Error checking status:', error);
+          clearInterval(statusInterval);
+          setStatusMessage('Error checking image status. Please try again.');
+          setIsGenerating(false);
+        }
+      }, 3000); // Check every 3 seconds
+      
+    } catch (error) {
+      console.error('Error starting image generation:', error);
+      setStatusMessage('Error starting image generation. Please try again.');
+      setIsGenerating(false);
     }
-
-    // Mock generated images (would come from API in real implementation)
-    const mockImages = [
-      'https://via.placeholder.com/400x400?text=Wallpaper+1',
-      'https://via.placeholder.com/400x400?text=Wallpaper+2',
-      'https://via.placeholder.com/400x400?text=Wallpaper+3',
-      'https://via.placeholder.com/400x400?text=Wallpaper+4'
-    ];
-
-    setGeneratedImages(mockImages);
-    setStatusMessage('Image generation complete! Select an image to customize.');
-    setIsGenerating(false);
   };
 
   const selectImage = (imageUrl: string) => {
@@ -98,25 +137,58 @@ export default function ImageCreation() {
             type="text" 
             className="p-2 border border-gray-300 rounded-md" 
             placeholder="Style (e.g., Modern, Vintage)" 
-            disabled={isGenerating}
-          />
-          <input 
-            type="text" 
-            className="p-2 border border-gray-300 rounded-md" 
-            placeholder="Colors" 
+            value={styleOption}
+            onChange={(e) => setStyleOption(e.target.value)}
             disabled={isGenerating}
           />
           <input 
             type="text" 
             className="p-2 border border-gray-300 rounded-md" 
             placeholder="Pattern structure" 
+            value={patternOption}
+            onChange={(e) => setPatternOption(e.target.value)}
+            disabled={isGenerating}
+          />
+          <input 
+            type="text" 
+            className="p-2 border border-gray-300 rounded-md" 
+            placeholder="Mood/Ambiance" 
+            value={colorOption}
+            onChange={(e) => setColorOption(e.target.value)}
             disabled={isGenerating}
           />
         </div>
         
+        {/* Selected Colors Display */}
+        {selectedColors.length > 0 && (
+          <div className="mb-4">
+            <p className="mb-2 font-medium">Selected Colors:</p>
+            <div className="flex flex-wrap gap-2">
+              {selectedColors.map((color, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-center bg-gray-100 rounded-full px-3 py-1"
+                >
+                  <div 
+                    className="w-4 h-4 rounded-full mr-2" 
+                    style={{ backgroundColor: color }}
+                  ></div>
+                  <span className="text-sm">{color}</span>
+                  <button 
+                    className="ml-2 text-gray-500 hover:text-gray-700"
+                    onClick={() => removeColor(color)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
         <button
           className="bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400"
-          onClick={generateImages}
+          onClick={startImageGeneration}
           disabled={isGenerating || !prompt.trim()}
         >
           {isGenerating ? 'Generating...' : 'Generate Images'}
@@ -139,32 +211,19 @@ export default function ImageCreation() {
       {/* Color Picker */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold mb-4">Choose Your Colors</h2>
-        <ColorPicker 
-          onColorSelect={(color) => {
-            console.log('Selected color:', color);
-            // In a real implementation, this would update the wallpaper color
-          }}
-        />
+        <p className="text-sm text-gray-600 mb-4">Select colors to include in your wallpaper design. These will be used as guidance for the AI image generator.</p>
+        <ColorPicker onColorSelect={handleColorSelect} />
       </div>
       
       {/* Generated Images */}
       {generatedImages.length > 0 && (
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-xl font-semibold mb-4">Select Your Favorite Design</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {generatedImages.map((imageUrl, index) => (
-              <div 
-                key={index} 
-                className={`cursor-pointer border-2 rounded-lg overflow-hidden ${selectedImage === imageUrl ? 'border-black' : 'border-transparent'}`}
-                onClick={() => selectImage(imageUrl)}
-              >
-                <img src={imageUrl} alt={`Generated wallpaper ${index + 1}`} className="w-full h-auto" />
-                <div className="p-2 text-center">
-                  <p>Design {index + 1}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ImageSelector 
+            images={generatedImages} 
+            onImageSelect={selectImage} 
+            isGenerating={isGenerating} 
+          />
         </div>
       )}
       
