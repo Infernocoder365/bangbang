@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import WallpaperSimulation from '@/components/WallpaperSimulation';
 
-export default function CustomProductDetail() {
+function CustomProductContent() {
   const searchParams = useSearchParams();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('396l-21w');
@@ -109,5 +109,13 @@ export default function CustomProductDetail() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CustomProductDetail() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CustomProductContent />
+    </Suspense>
   );
 }
