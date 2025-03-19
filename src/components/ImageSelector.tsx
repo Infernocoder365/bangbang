@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import LoadingSpinner from './LoadingSpinner';
 
 interface ImageSelectorProps {
   images: string[];
@@ -41,6 +42,7 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({ images, onImageSelect, is
   // Handle image selection transitions
   const handleImageSelectButtonTransitions = (imageKey: string, imageUrl: string) => {
     setSelectedImage(imageUrl);
+    setStatusMessage('Image selected. You can now customize and order this design.');
     onImageSelect(imageUrl);
   };
 
@@ -111,13 +113,27 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({ images, onImageSelect, is
           return (
             <div 
               key={index} 
-              className={`cursor-pointer border-2 rounded-lg overflow-hidden ${selectedImage === imageKey ? 'border-black' : 'border-transparent'}`}
+              className={`cursor-pointer border-2 rounded-lg overflow-hidden transition-all duration-300 transform hover:scale-105 ${selectedImage === imageKey ? 'border-black shadow-lg' : 'border-transparent'}`}
               onClick={onClick}
             >
-              <img src={imageUrl} alt={`Generated wallpaper ${index + 1}`} className="w-full h-auto" />
-              <div className="p-2 text-center">
-                <p>Image {index + 1}</p>
-              </div>
+              {isGenerating ? (
+                <div className="w-full h-64 flex items-center justify-center bg-gray-100">
+                  <LoadingSpinner size="large" color="#4B5563" />
+                </div>
+              ) : (
+                <>
+                  <img 
+                    src={imageUrl} 
+                    alt={`Generated wallpaper ${index + 1}`} 
+                    className="w-full h-auto transition-opacity duration-300" 
+                    onLoad={(e) => (e.target as HTMLImageElement).style.opacity = '1'}
+                    style={{ opacity: 0 }}
+                  />
+                  <div className="p-2 text-center bg-white transition-colors duration-300">
+                    <p>Image {index + 1}</p>
+                  </div>
+                </>
+              )}
             </div>
           );
         })}

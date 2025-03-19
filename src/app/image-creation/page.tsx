@@ -2,11 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import ColorPicker from '@/components/ColorPicker';
 import ImageSelector from '@/components/ImageSelector';
+import WallpaperSimulation from '@/components/WallpaperSimulation';
 import { generateImages, checkImageStatus, getImageResults } from '@/services/imageService';
 
 export default function ImageCreation() {
+  const router = useRouter();
+  const [selectedSize, setSelectedSize] = useState('standard');
   const [prompt, setPrompt] = useState('');
   const [styleOption, setStyleOption] = useState('');
   const [patternOption, setPatternOption] = useState('');
@@ -99,6 +103,7 @@ export default function ImageCreation() {
   const selectImage = (imageUrl: string) => {
     setSelectedImage(imageUrl);
     setStatusMessage('Image selected. You can now customize and order this design.');
+    router.push(`/product/custom?image=${encodeURIComponent(imageUrl)}&size=${selectedSize}`);
   };
 
   const addToCart = () => {
@@ -218,12 +223,29 @@ export default function ImageCreation() {
       {/* Generated Images */}
       {generatedImages.length > 0 && (
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h2 className="text-xl font-semibold mb-4">Select Your Favorite Design</h2>
-          <ImageSelector 
-            images={generatedImages} 
-            onImageSelect={selectImage} 
-            isGenerating={isGenerating} 
-          />
+          <h2 className="text-xl font-semibold mb-4">Generated Designs</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {generatedImages.map((imageUrl, index) => (
+              <div
+                key={index}
+                className="relative aspect-square cursor-pointer hover:opacity-90 transition-opacity"
+                onClick={() => selectImage(imageUrl)}
+              >
+                <img
+                  src={imageUrl}
+                  alt={`Generated design ${index + 1}`}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+            ))}
+          </div>
+          
+          {/* Wallpaper Simulation */}
+          {selectedImage && (
+            <div className="mt-8">
+              <WallpaperSimulation imageUrl={selectedImage} selectedRollSize={selectedSize} onScaleChange={(scale) => console.log('Scale changed:', scale)} />
+            </div>
+          )}
         </div>
       )}
       

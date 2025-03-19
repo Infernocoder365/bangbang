@@ -2,15 +2,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import ColorPicker from '@/components/ColorPicker';
 import ImageSelector from '@/components/ImageSelector';
+import WallpaperSimulation from '@/components/WallpaperSimulation';
 import { generateImages, checkImageStatus, getImageResults } from '@/services/imageService';
 
 export default function Home() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState('');
   const [progressValue, setProgressValue] = useState(0);
   const [statusMessage, setStatusMessage] = useState('No active request yet');
   const [requestId, setRequestId] = useState<string | null>(null);
@@ -88,9 +92,9 @@ export default function Home() {
           const statusData = await checkImageStatus(id);
           
           // Update progress based on status
-          if (statusData.status === 'pending') {
-            setStatusMessage(`Generating images... ${Math.round(statusData.progress * 100)}%`);
-            setProgressValue(statusData.progress * 100);
+          if (statusData.status === 'in-progress') {
+            setStatusMessage(`Generating images... ${Math.round(statusData.progress)}%`);
+            setProgressValue(statusData.progress);
           } else if (statusData.status === 'completed') {
             clearInterval(statusInterval);
             setStatusMessage('Images generated! Fetching results...');
@@ -131,6 +135,7 @@ export default function Home() {
   const selectImage = (imageUrl: string) => {
     setSelectedImage(imageUrl);
     setStatusMessage('Image selected. You can now customize and order this design.');
+    // router.push(`/product/custom?image=${encodeURIComponent(imageUrl)}&size=${selectedSize}`);
   };
   
   return (
@@ -346,14 +351,14 @@ export default function Home() {
 
       {/* Preview Section */}
       <div className="bg-white p-4 flex flex-col items-center w-3/4 mx-auto">
-        <p className="text-md text-center mb-4">{statusMessage}</p>
+        <p className="text-md text-center mb-4 animate-fade-in">{statusMessage}</p>
 
         {/* Progress Bar */}
         {isGenerating && (
-          <div className="w-full mb-4">
+          <div className="w-full mb-4 animate-slide-in-from-top">
             <div className="w-full bg-gray-200 rounded-full h-2.5">
               <div 
-                className="bg-black h-2.5 rounded-full" 
+                className="bg-black h-2.5 rounded-full transition-all duration-300" 
                 style={{ width: `${progressValue}%` }}
               ></div>
             </div>
@@ -395,18 +400,32 @@ export default function Home() {
             {/* Roll Size Selection */}
             <div className="mb-4">
               <label className="block mb-2 font-medium">Roll Size *</label>
-              <select className="w-full p-2 border border-gray-300 rounded">
-                <option>Pick a size</option>
-                <option>396' l x 21' w: $360</option>
-                <option>396' l x 42' w: $700</option>
+              <select 
+                className="w-full p-2 border border-gray-300 rounded"
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+              >
+                <option value="">Pick a size</option>
+                <option value="396l-21w">396' l x 21' w: $360</option>
+                <option value="396l-42w">396' l x 42' w: $700</option>
                 <option value="600l-42w" className="bg-cyan-100">600' l x 42' w: $1000</option>
-                <option>1200' l x 42' w: $1360</option>
+                <option value="1200l-42w">1200' l x 42' w: $1360</option>
               </select>
             </div>
             
             {/* Create Product Button */}
             <div className="mb-6 flex justify-center">
-              <button className="bg-gray-800 text-white py-2 px-8 font-medium">
+              <button 
+                className="bg-gray-800 text-white py-2 px-8 font-medium"
+                onClick={() => {
+                  console.log("created projuct");
+                  if (selectedImage && selectedSize) {
+                    router.push(`/product/custom?image=${encodeURIComponent(selectedImage)}&size=${encodeURIComponent(selectedSize)}&primaryImagery=${encodeURIComponent(primaryImagery)}`);
+                  } else {
+                    setStatusMessage('Please select both an image and a size before proceeding');
+                  }
+                }}
+              >
                 Create Product
               </button>
             </div>
@@ -414,23 +433,11 @@ export default function Home() {
             {/* Wallpaper Scale Simulation */}
             <div className="border-t border-gray-300 pt-4 mb-4">
               <h3 className="text-lg font-bold text-center mb-4">Wallpaper Scale Simulation</h3>
-              <div className="flex justify-center mb-4">
-                <div className="flex space-x-2">
-                  <button className="bg-gray-800 text-white text-xs py-1 px-3">1/4 of actual size</button>
-                  <button className="bg-gray-800 text-white text-xs py-1 px-3">1/2 of actual size</button>
-                  <button className="bg-gray-800 text-white text-xs py-1 px-3">3/4 of actual size</button>
-                </div>
-              </div>
-              <div className="flex justify-center">
-                <img 
-                  src={selectedImage} 
-                  alt="Wallpaper scale simulation" 
-                  className="w-full max-w-[600px] border border-gray-300" 
-                />
-              </div>
-              <div className="text-center text-xs text-gray-500 mt-2">
-                Dimensions: 600' l x 42' w • $1000
-              </div>
+              <WallpaperSimulation 
+                imageUrl={selectedImage} 
+                selectedRollSize={selectedSize} 
+                onScaleChange={(scale) => console.log('Scale changed:', scale)}
+              />
             </div>
           </div>
         )}

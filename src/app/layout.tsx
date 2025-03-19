@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
+import PageTransition from '../components/PageTransition';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        <main>{children}</main>
+        <main className="min-h-screen">
+          <PageTransition transitionType="fade" duration={0.4}>{children}</PageTransition>
+        </main>
         <Footer />
         <ChatWidget />
       </body>

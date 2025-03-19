@@ -1,7 +1,11 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function CuratedProducts() {
+  const router = useRouter();
   // Sample product data - in a real application, this would come from an API or database
   const products = [
     { id: 1, name: 'Tropical Paradise', price: 49.99, category: 'Nature' },
@@ -34,7 +38,11 @@ export default function CuratedProducts() {
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {products.map((product) => (
-          <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+          <div 
+            key={product.id} 
+            className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => router.push(`/product/${product.id}`)}
+          >
             {/* Product Image */}
             <div className="aspect-square bg-gray-100 relative">
               <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded text-xs font-medium">{product.category}</div>
@@ -46,7 +54,15 @@ export default function CuratedProducts() {
               <p className="text-gray-500 text-sm mb-2">Pre-designed wallpaper</p>
               <div className="flex justify-between items-center">
                 <span className="font-bold">${product.price}</span>
-                <button className="bg-gray-800 text-white px-3 py-1 rounded text-sm">Add to Cart</button>
+                <button 
+                  className="bg-gray-800 text-white px-3 py-1 rounded text-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    alert(`Added ${product.name} to cart!`);
+                  }}
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
           </div>
