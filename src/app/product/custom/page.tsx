@@ -34,7 +34,7 @@ function CustomProductContent() {
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="mb-6">
-        <Link href="/image-creation" className="text-blue-600 hover:underline">
+        <Link href="/" className="text-blue-600 hover:underline">
           &larr; Back to Image Creation
         </Link>
       </div>

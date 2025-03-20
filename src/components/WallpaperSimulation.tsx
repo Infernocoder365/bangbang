@@ -35,11 +35,21 @@ export default function WallpaperSimulation({ imageUrl, onScaleChange, selectedR
 
   useEffect(() => {
     if (imageUrl) {
+      const img = new Image();
+      img.onload = () => {
+        setIsImageLoading(false);
+        if (onImageLoad) onImageLoad();
+      };
+      img.onerror = () => {
+        setIsImageLoading(false);
+        setError('Failed to load image');
+      };
       setIsImageLoading(true);
+      img.src = imageUrl;
       setPatternImageUrl(imageUrl);
       setError(null);
     }
-  }, [imageUrl]);
+  }, [imageUrl, onImageLoad]);
   
   // Listen for messages from parent window (e.g., Wix)
   useEffect(() => {
@@ -171,10 +181,6 @@ export default function WallpaperSimulation({ imageUrl, onScaleChange, selectedR
           style={{
             backgroundImage: patternImageUrl ? `url(${patternImageUrl})` : 'none',
             backgroundSize: `${(fullScaleTileSizeInInches * currentScaleFactor * 100 / wallWidthInInches)}% auto`
-          }}
-          onLoad={() => {
-            setIsImageLoading(false);
-            if (onImageLoad) onImageLoad();
           }}
         />
 

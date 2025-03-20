@@ -42,22 +42,26 @@ const Header = () => {
     <header className="flex justify-between items-center p-4 bg-white border-b border-gray-200">
       {/* Logo */}
       <div className="flex items-center ml-5">
-        <svg
-          preserveAspectRatio="xMidYMid meet"
-          viewBox="10 10 180 180"
-          height="40"
-          width="40"
-          xmlns="http://www.w3.org/2000/svg"
-          className="mr-2"
-        >
-          <g>
-            <path d="M190 100l-27.182-27.182 26-26L182 40l-26 26-56-56-90 90 56 56-26 26 6.818 6.818 26-26L100 190l90-90zm-159.545 0L100 30.455l45.818 45.818-69.545 69.545L30.455 100zm122.181-17l17 17L100 169.545l-17-17L152.636 83z" fill="#000000"></path>
-          </g>
-        </svg>
-        <div className="flex flex-col">
-          <span className="text-3xl font-medium">BangBang</span>
-          <span className="text-3xl font-medium">Wallpaper</span>
-        </div>
+        <Link href="/">
+          <div className="flex items-center cursor-pointer">
+            <svg
+              preserveAspectRatio="xMidYMid meet"
+              viewBox="10 10 180 180"
+              height="40"
+              width="40"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mr-2"
+            >
+              <g>
+                <path d="M190 100l-27.182-27.182 26-26L182 40l-26 26-56-56-90 90 56 56-26 26 6.818 6.818 26-26L100 190l90-90zm-159.545 0L100 30.455l45.818 45.818-69.545 69.545L30.455 100zm122.181-17l17 17L100 169.545l-17-17L152.636 83z" fill="#000000"></path>
+              </g>
+            </svg>
+            <div className="flex flex-col">
+              <span className="text-3xl font-medium">BangBang</span>
+              <span className="text-3xl font-medium">Wallpaper</span>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Navigation */}
