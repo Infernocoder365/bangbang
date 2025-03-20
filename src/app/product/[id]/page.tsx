@@ -143,7 +143,11 @@ export default function ProductDetail() {
           >
             Add to Cart
           </button>
-          
+          in my main page, I click create product button,
+
+move to product page with selected image and size.
+
+I'll share the product page design.
           {/* Additional Info */}
           <div className="mt-8 border-t pt-6">
             <div className="mb-4">

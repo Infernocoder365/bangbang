@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ColorPicker from '@/components/ColorPicker';
@@ -141,17 +142,17 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <div className="p-20 flex flex-col items-center justify-center text-center w-3/4 mx-auto" style={{ backgroundImage: "url('/mainBG.jpg')", backgroundSize: "cover", backgroundPosition: "center",color: "#411e06" }}>
-        <h1 className="text-5xl font-serif mb-4">Custom Wallpaper,</h1>
-        <h1 className="text-5xl font-serif mb-4">Created by you!</h1>
-        <h1 className="text-5xl font-serif mb-12">Shipped to your door!</h1>
+      <div className="p-8 sm:p-12 md:p-20 flex flex-col items-center justify-center text-center w-full sm:w-11/12 md:w-3/4 mx-auto" style={{ backgroundImage: "url('/mainBG.jpg')", backgroundSize: "cover", backgroundPosition: "center",color: "#411e06" }}>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-3 sm:mb-4">Custom Wallpaper,</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-3 sm:mb-4">Created by you!</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-8 sm:mb-12">Shipped to your door!</h1>
 
-        <p className="text-xl font-bold mb-1">You design it.</p>
-        <p className="text-xl font-bold mb-7">We make it and ship it direct to you.</p>
+        <p className="text-lg sm:text-xl font-bold mb-1">You design it.</p>
+        <p className="text-lg sm:text-xl font-bold mb-5 sm:mb-7">We make it and ship it direct to you.</p>
       </div>
 
       {/* Form Section */}
-      <div className="bg-white p-6 flex flex-col items-center w-3/4 mx-auto">
+      <div className="bg-white p-4 sm:p-6 flex flex-col items-center w-full sm:w-11/12 md:w-3/4 mx-auto">
         {/* Primary Image Input */}
         <div className="w-full mb-2">
           <div className="text-center mb-2">
@@ -168,7 +169,7 @@ export default function Home() {
         </div>
 
         {/* Design Style */}
-        <div className="w-full mb-6 max-w-sm">
+        <div className="w-full mb-4 sm:mb-6 max-w-full sm:max-w-sm">
           <div className="text-center mb-2">
             <h3 className="text-2xl font-bold input-label">Design Style</h3>
             <p className="text-md font-bold input-label">*Optional Field*
@@ -185,7 +186,7 @@ export default function Home() {
         </div>
 
         {/* Enhanced Image Creation */}
-        <div className="w-full mb-6 max-w-sm">
+        <div className="w-full mb-4 sm:mb-6 max-w-full sm:max-w-sm">
           <div className="text-center mb-2">
             <h3 className="text-xl font-bold input-label">Enhanced Image Control</h3>
             <p className="text-md font-bold input-label text-center-800">*All Fields Below are Optional*</p>
@@ -202,7 +203,7 @@ export default function Home() {
         </div>
 
         {/* Two Column Section */}
-        <div className="w-full grid grid-cols-2 gap-30 mb-6">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-30 mb-4 sm:mb-6">
           <div>
             <div className="mb-2 items-center">
               <h3 className="text-lg font-bold input-label text-center">Pattern Structure</h3>
@@ -232,7 +233,7 @@ export default function Home() {
         </div>
 
         {/* Second Two Column Section */}
-        <div className="w-full grid grid-cols-2 gap-30 mb-6">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-30 mb-4 sm:mb-6">
           <div>
             <div className="mb-2">
               <h3 className="text-lg font-bold input-label text-center">Specific Qualities</h3>
@@ -268,10 +269,10 @@ export default function Home() {
         </div>
 
         {/* Tabs */}
-        <div className="w-full border-t border-b border-gray-300 flex justify-between text-md mb-4">
-          <div className={`cursor-pointer py-2 px-4 tab-item ${activeTab === 0 ? "font-medium border-b-2 border-gray-800" : ""}`} onClick={() => setActiveTab(0)}>Design Style & Accents, Details, Effects</div>
-          <div className={`cursor-pointer py-2 px-4 tab-item ${activeTab === 1 ? "font-medium border-b-2 border-gray-800" : ""}`} onClick={() => setActiveTab(1)}>Pattern Structure & Mood/Ambiance</div>
-          <div className={`cursor-pointer py-2 px-4 tab-item ${activeTab === 2 ? "font-medium border-b-2 border-gray-800" : ""}`} onClick={() => setActiveTab(2)}>Specific Qualities & Tone/Adjective</div>
+        <div className="w-full border-t border-b border-gray-300 flex flex-col sm:flex-row justify-between text-sm sm:text-md mb-4">
+          <div className={`cursor-pointer py-2 px-2 sm:px-4 text-center tab-item ${activeTab === 0 ? "font-medium border-b-2 border-gray-800" : ""}`} onClick={() => setActiveTab(0)}>Design Style & Accents, Details, Effects</div>
+          <div className={`cursor-pointer py-2 px-2 sm:px-4 text-center tab-item ${activeTab === 1 ? "font-medium border-b-2 border-gray-800" : ""}`} onClick={() => setActiveTab(1)}>Pattern Structure & Mood/Ambiance</div>
+          <div className={`cursor-pointer py-2 px-2 sm:px-4 text-center tab-item ${activeTab === 2 ? "font-medium border-b-2 border-gray-800" : ""}`} onClick={() => setActiveTab(2)}>Specific Qualities & Tone/Adjective</div>
         </div>
 
         {/* Tab Content */}
@@ -341,7 +342,7 @@ export default function Home() {
           </div>
         )}
       </div>
-      <div className="w-3/4 mx-auto">
+      <div className="w-full sm:w-11/12 md:w-3/4 mx-auto px-4 sm:px-0">
         <ColorPicker onColorSelect={handleColorSelect} />
       </div>
       {/* Create Section */}
@@ -350,7 +351,7 @@ export default function Home() {
       </div>
 
       {/* Preview Section */}
-      <div className="bg-white p-4 flex flex-col items-center w-3/4 mx-auto">
+      <div className="bg-white p-4 flex flex-col items-center w-full sm:w-11/12 md:w-3/4 mx-auto">
         <p className="text-md text-center mb-4 animate-fade-in">{statusMessage}</p>
 
         {/* Progress Bar */}
@@ -376,7 +377,7 @@ export default function Home() {
           </div>
         ) : (
           /* Preview Image Placeholder */
-          <div className="mb-6 w-[512px] h-[512px] border border-gray-200 flex items-center justify-center bg-gray-50">
+          <div className="mb-6 w-full max-w-[512px] h-[300px] sm:h-[400px] md:h-[512px] border border-gray-200 flex items-center justify-center bg-gray-50">
             <img src="/ImagePlaceHolder.png" alt="Preview placeholder" className="max-w-full max-h-full" />
           </div>
         )}

@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function MyWallet() {
+export default function MyWalletContent() {
   // Sample wallet data
   const [balance, setBalance] = useState(250.00);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [transactions, setTransactions] = useState([
     { id: 1, date: '2023-12-15', description: 'Wallpaper Purchase', amount: -120.00, status: 'completed' },
     { id: 2, date: '2023-12-10', description: 'Account Deposit', amount: 200.00, status: 'completed' },
@@ -15,8 +16,7 @@ export default function MyWallet() {
   ]);
   
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">My Wallet</h1>
+    <>
       
       {/* Balance Card */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8" style={{ backgroundColor: "#FBE8E8" }}>
@@ -71,7 +71,12 @@ export default function MyWallet() {
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Payment Methods</h2>
-          <button className="text-sm text-gray-600 hover:text-gray-900">+ Add New</button>
+          <button 
+            onClick={() => setShowPaymentDialog(true)}
+            className="text-sm text-gray-600 hover:text-gray-900"
+          >
+            + Add New
+          </button>
         </div>
         
         <div className="border rounded-lg p-4 mb-4 flex justify-between items-center">
@@ -139,6 +144,102 @@ export default function MyWallet() {
           <p className="text-xs text-gray-500 mt-2">Expired: November 30, 2023</p>
         </div>
       </div>
-    </div>
+      
+      {/* Payment Method Dialog */}
+      <AnimatePresence>
+        {showPaymentDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: 'spring', damping: 20 }}
+              className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Add Payment Method</h2>
+                  <button 
+                    onClick={() => setShowPaymentDialog(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                
+                <form className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                    <input 
+                      type="text" 
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                      placeholder="1234 5678 9012 3456"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
+                      <input 
+                        type="text" 
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                        placeholder="MM/YY"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                      <input 
+                        type="text" 
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                        placeholder="123"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Cardholder Name</label>
+                    <input 
+                      type="text" 
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center mt-2">
+                    <input 
+                      type="checkbox" 
+                      id="defaultCard" 
+                      className="h-4 w-4 text-gray-800 focus:ring-gray-400 border-gray-300 rounded"
+                    />
+                    <label htmlFor="defaultCard" className="ml-2 block text-sm text-gray-700">
+                      Set as default payment method
+                    </label>
+                  </div>
+                  
+                  <div className="flex justify-end space-x-3 mt-6">
+                    <button
+                      type="button"
+                      onClick={() => setShowPaymentDialog(false)}
+                      className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+                    >
+                      Save Payment Method
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

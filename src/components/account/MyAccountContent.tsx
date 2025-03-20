@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 
-export default function MyAccount() {
+export default function MyAccountContent() {
   // Sample user data
   const [userData, setUserData] = useState({
     firstName: 'John',
@@ -50,25 +49,7 @@ export default function MyAccount() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {/* Account Tabs */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="flex">
-          <Link href="/my-account" className="border-b-2 border-black px-4 py-2 font-medium text-sm">
-            My Account
-          </Link>
-          <Link href="/my-orders" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900">
-            My Orders
-          </Link>
-          <Link href="/my-addresses" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900">
-            My Addresses
-          </Link>
-          <Link href="/my-wallet" className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900">
-            My Wallet
-          </Link>
-        </nav>
-      </div>
-      
+    <>
       <h1 className="text-2xl font-bold mb-6">Account</h1>
       <p className="text-sm text-gray-600 mb-8">View and edit your personal info below.</p>
       
@@ -103,66 +84,84 @@ export default function MyAccount() {
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Phone</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-transparent"
-                disabled={!isEditing}
-              />
-            </div>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="email"
+              value={userData.email}
+              className="w-full border border-gray-300 rounded p-2 text-sm bg-gray-50 focus:outline-none"
+              disabled
+            />
+            <p className="text-xs text-gray-500 mt-1">To change your email, please contact support.</p>
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-1">Phone number</label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              className="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-transparent"
+              disabled={!isEditing}
+            />
           </div>
           
           {isEditing ? (
-            <div className="flex justify-end space-x-2 mt-4">
-              <button 
+            <div className="flex space-x-3">
+              <button
+                type="submit"
+                className="bg-black text-white px-4 py-2 rounded text-sm hover:bg-gray-800 transition-colors"
+              >
+                Save Changes
+              </button>
+              <button
                 type="button"
                 onClick={handleDiscard}
-                className="border border-gray-300 px-4 py-2 rounded text-sm"
+                className="border border-gray-300 px-4 py-2 rounded text-sm hover:bg-gray-50 transition-colors"
               >
                 Discard
               </button>
-              <button 
-                type="submit"
-                className="bg-black text-white px-4 py-2 rounded text-sm"
-              >
-                Update Info
-              </button>
             </div>
           ) : (
-            <div className="flex justify-end mt-4">
-              <button 
-                type="button"
-                onClick={() => setIsEditing(true)}
-                className="bg-black text-white px-4 py-2 rounded text-sm"
-              >
-                Edit
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="border border-gray-300 px-4 py-2 rounded text-sm hover:bg-gray-50 transition-colors"
+            >
+              Edit
+            </button>
           )}
         </form>
       </div>
       
-      {/* Login Info */}
+      {/* Account Security */}
       <div>
-        <h2 className="text-lg font-medium mb-4">Login info</h2>
-        <p className="text-sm text-gray-600 mb-4">View and update your login email and password.</p>
+        <h2 className="text-lg font-medium mb-4">Account Security</h2>
+        <p className="text-sm text-gray-600 mb-4">Manage your password and account security.</p>
         
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-1">Login email:</p>
-          <p className="text-sm">{userData.email}</p>
-          <button className="text-sm text-gray-800 hover:text-gray-900 underline mt-1">Change Email</button>
+        <div className="border-t border-gray-200 py-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">Password</h3>
+              <p className="text-sm text-gray-600">Last updated 3 months ago</p>
+            </div>
+            <button className="text-sm text-gray-600 hover:text-gray-900">Change</button>
+          </div>
         </div>
         
-        <div>
-          <p className="text-sm font-medium mb-1">Password:</p>
-          <p className="text-sm">••••••</p>
-          <button className="text-sm text-gray-800 hover:text-gray-900 underline mt-1">Change Password</button>
+        <div className="border-t border-gray-200 py-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">Two-factor authentication</h3>
+              <p className="text-sm text-gray-600">Not enabled</p>
+            </div>
+            <button className="text-sm text-gray-600 hover:text-gray-900">Enable</button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

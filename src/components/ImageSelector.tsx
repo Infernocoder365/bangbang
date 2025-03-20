@@ -100,7 +100,7 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({ images, onImageSelect, is
         </div>
       )}
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {images.map((imageUrl, index) => {
           const imageKey = `image${index + 1}` as keyof ImageUrlMap;
           const onClick = {
