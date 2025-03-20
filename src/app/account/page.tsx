@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AccountTabs from '@/components/AccountTabs';
 
@@ -10,7 +10,7 @@ import MyOrdersContent from '@/components/account/MyOrdersContent';
 import MyAddressesContent from '@/components/account/MyAddressesContent';
 import MyWalletContent from '@/components/account/MyWalletContent';
 
-export default function AccountPage() {
+function AccountPageContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('account');
   
@@ -58,5 +58,13 @@ export default function AccountPage() {
         {renderContent()}
       </div>
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountPageContent />
+    </Suspense>
   );
 }
