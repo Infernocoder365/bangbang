@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -7,11 +7,11 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
   return (
-    <footer className="border-t border-gray-200 py-6 sm:py-8 px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-10">
-        <div className="space-y-4">
-          <motion.div 
+    <footer className="border-t border-gray-200 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+        <div className="space-y-4 flex flex-col items-center md:items-start">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -21,19 +21,19 @@ const Footer = () => {
             <span className="ml-2 text-lg font-medium">Operations</span>
           </motion.div>
           {/* First column - Contact info */}
-          <div className="text-sm sm:text-base space-y-2 ml-2">
+          <div className="text-sm sm:text-base space-y-2 ml-2 text-center md:text-left">
             <p className="text-gray-600">Mon - Fri, 8 am - 4 pm</p>
             <p className="text-lg font-bold mt-4">Information</p>
-            <div className="space-y-2">
+            <div className="space-y-2 flex flex-col items-center md:items-start">
               <p><Link href="/about" className="hover:underline transition-colors duration-200">About Us</Link></p>
               <p><Link href="/privacy-policy" className="hover:underline transition-colors duration-200">Privacy Policy</Link></p>
               <p><Link href="/terms-conditions" className="hover:underline transition-colors duration-200">Terms & Conditions</Link></p>
             </div>
           </div>
         </div>
-        
+
         {/* Second column - Newsletter signup */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -51,9 +51,9 @@ const Footer = () => {
             Sign Up
           </button>
         </motion.div>
-        
+
         {/* Third column - Social links */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -65,9 +65,9 @@ const Footer = () => {
           </Link>
         </motion.div>
       </div>
-      
+
       {/* Logo */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
@@ -75,11 +75,11 @@ const Footer = () => {
       >
         <div className="flex flex-col items-center">
           <div className="mb-3">
-            <svg 
-              preserveAspectRatio="xMidYMid meet" 
-              viewBox="10 10 180 180" 
-              height="50" 
-              width="50" 
+            <svg
+              preserveAspectRatio="xMidYMid meet"
+              viewBox="10 10 180 180"
+              height="50"
+              width="50"
               xmlns="http://www.w3.org/2000/svg"
               className="hover:opacity-80 transition-opacity duration-200"
             >
@@ -94,13 +94,13 @@ const Footer = () => {
           </div>
         </div>
       </motion.div>
-      
+
       {/* Payment Methods */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6 mb-6 sm:mb-8 items-center"
+        className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6 mb-8 items-center"
       >
         <div className="w-full max-w-md">
           <Image className='w-full h-auto' src="/payment.png" alt="payment" width={500} height={80} />
@@ -109,7 +109,7 @@ const Footer = () => {
           <Image className='w-full h-auto' src="/social.png" alt="social" width={230} height={80} />
         </div>
       </motion.div>
-      
+
       <div className="text-center text-sm text-gray-500 mt-8">
         <p>© {new Date().getFullYear()} BangBang Wallpaper. All rights reserved.</p>
       </div>
